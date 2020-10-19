@@ -7,7 +7,7 @@ class StockMove(models.Model):
 
     def _get_type_reference(self):
         for move in self:
-            if move.sale_line_id and move.sale_line_id.type_reference:
+            if move.sale_line_id:
                 move.type_reference = move.sale_line_id.type_reference
 
     type_reference = fields.Char('Type Reference', compute='_get_type_reference')
@@ -17,7 +17,7 @@ class StockMoveLine(models.Model):
 
     def _get_type_reference(self):
         for line in self:
-            if line.move_id and line.move_id.sale_line_id and move.sale_line_id.type_reference:
+            if line.move_id and line.move_id.sale_line_id:
                 line.type_reference = line.move_id.sale_line_id.type_reference
 
     type_reference = fields.Char('Type Reference', compute='_get_type_reference')
