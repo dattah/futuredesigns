@@ -7,7 +7,7 @@ class AccountMoveLine(models.Model):
 
     def _get_type_reference(self):
         for line in self:
-            if line.sale_line_ids:
+            if line.sale_line_ids and line.sale_line_ids[0].type_reference:
                 line.type_reference = line.sale_line_ids[0].type_reference
 
     type_reference = fields.Char('Type Reference', compute='_get_type_reference')
