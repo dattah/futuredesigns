@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<t t-name="web.external_layout_standard">
+    <div t-attf-class="header o_company_#{company.id}_layout" t-att-style="report_header_style">
+        <div class="row">
+
+            <div class="col-2" name="company_address">
+                <div class="font-weight-bold" style="margin-top:22px;font-size:0.9em;" t-field="company.report_header" name="moto" />
+                <div style="font-size:0.8em;" t-field="company.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: true}" />
+            </div>
+            <div class="col-2 text-left">
+
+                <!--t t-esc="company.country_id.vat_label or 'Tax ID'"/>: <small t-field="company.vat"/>
+                  <small class="o_force_ltr" t-field="company.phone"/>
+                  <small t-field="company.email"/>
+                  <small t-field="company.website"/-->
+                <span style="font-size:0.9em;">CLERKENWELL Lighthouse</span>
+                <small style="font-size:0.8em;">32 Dallington Street</small>
+                <small style="font-size:0.8em;">London</small>
+                <small style="font-size:0.8em;">EC1V 0BB</small>
+
+            </div>
+            <div class="col-3">
+                <!--t t-esc="company.country_id.vat_label or 'Tax ID'"/>: <small t-field="company.vat"/>
+                  <small class="o_force_ltr" t-field="company.phone"/>
+                  <small t-field="company.email"/>
+                  <small t-field="company.website"/-->
+                <span style="font-size:0.8em;">Dubai Headquarters</span>
+                <small style="font-size:0.8em;">Office 4C Level 4,</small>
+                <small style="font-size:0.8em;">Union National Bank Building</small>
+                <small style="font-size:0.8em;">Khalid Bin Waleed Street
+                        (Bank Street), Bur Dubai
+                        Dubai
+                  </small>
+                <small style="font-size:0.8em;">United Arab Emirates</small>
+
+                <!--h3 style="font-weight:bold;font-size:1.5em;margin-top:45px;">INVOICE</h3-->
+            </div>
+            <div class="col-3">
+                <!--t t-esc="company.country_id.vat_label or 'Tax ID'"/>: <small t-field="company.vat"/>
+                    <small class="o_force_ltr" t-field="company.phone"/>
+                    <small t-field="company.email"/>
+                    <small t-field="company.website"/-->
+
+                <small style="font-size:0.8em;">HQ +44(0)173 286 7420</small>
+                <small style="font-size:0.8em;">LDN +44 (0)20 3961 4500</small>
+                <small style="font-size:0.8em;">DUBAI +971 4 385 8199</small>
+                <small style="font-size:0.8em;">light@futuredesigns.co.uk</small>
+                <small style="font-size:0.8em;">futuredesigns.co.uk</small>
+            </div>
+            <div class="col-2 mb4 text-right">
+                <img t-if="company.logo" class="float-right" t-att-src="image_data_uri(company.logo)" style="max-height: 235px;" alt="Logo" />
+            </div>
+        </div>
+        <!--div t-if="company.logo or company.report_header" class="row zero_min_height">
+                <div class="col-12">
+                    <div style="border-bottom: 1px solid black;"/>
+                </div>
+            </div-->
+        <!--div class="row">
+            </di-->
+    </div>
+    <div style="padding-top:100px;" t-attf-class="article o_report_layout_standard o_company_#{company.id}_layout" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+        <!--t t-call="web.address_layout"/-->
+        <t t-raw="0" />
+    </div>
+    <div t-attf-class="footer o_standard_footer o_company_#{company.id}_layout">
+        <div class="text-left" style="border-top: 1px solid black;">
+
+            <div class="row">
+                <div class="col-3" name="financial_infos">
+                    <small t-field="company.report_footer" />
+                </div>
+                <div class="col-4">
+                    <t t-esc="company.country_id.vat_label or 'Tax ID'" />:
+                    <small t-field="company.vat" /> <br/>
+                    <small class="o_force_ltr" t-field="company.phone" /><br/>
+                    <small t-field="company.email" /><br/>
+                    <small t-field="company.website" />
+                </div>
+
+            </div>
+            <div t-if="report_type == 'pdf'" class="text-muted">
+                Page: <span class="page" /> / <span class="topage" />
+            </div>
+        </div>
+    </div>
+</t>

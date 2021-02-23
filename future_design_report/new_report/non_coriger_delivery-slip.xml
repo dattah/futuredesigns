@@ -1,0 +1,195 @@
+<?xml version="1.0"?>
+<t t-name="stock.report_delivery_document">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <t t-set="o" t-value="o.with_context(lang=o.partner_id.lang)"/>
+                <t t-set="partner" t-value="o.partner_id or (o.move_lines and o.move_lines[0].partner_id) or False"/>
+                <t t-if="partner" name="partner_header">
+                    <t t-set="address">
+                        <div t-esc="partner" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;], &quot;no_marker&quot;: True}"/>
+                   </t>
+                </t>
+
+                <div class="page">
+                
+                    
+                      <div class="row" style="margin-bottom:30px;">
+                            <div class="col-4"></div>
+                            <div class="col-6">
+                                 <h3 style="font-weight:bold;font-size:1.5em;margin-top:45px;">DELIVERY NOTE</h3>
+                            </div>
+                      </div>
+                      
+                       
+                      <div class="row">
+                      
+                        <div class="col-1"></div>
+                        <div class="col-4">
+                    
+                            <strong>Delivery Address:</strong>
+                            <small style="font-size:0.8em;">
+                                <div t-esc="partner" t-options="{&quot;widget&quot;:&quot;contact&quot;,&quot;fields&quot;: [&quot;address&quot;]}"/>
+                            </small>
+                        
+                        </div>
+                        <div class="col-2"></div>
+                        <div class="col-4">
+                              <strong>Invoice Address:</strong>
+                              <small style="font-size:0.8em;">
+                                  <div t-esc="partner" t-options="{&quot;widget&quot;:&quot;contact&quot;,&quot;fields&quot;: [&quot;address&quot;]}"/>
+                              </small>
+                        
+                        </div>
+                      </div>
+                    
+                    <h2 style="margin-top:55px;">
+                        <span t-field="o.name"/>
+                    </h2>
+                    <div class="row mt32 mb32">
+                        <div t-if="o.origin" class="col-auto" name="div_origin">
+                            <strong>Order:</strong>
+                            <p t-field="o.origin"/>
+                        </div>
+                        <div t-if="o.state" class="col-auto" name="div_sched_date">
+                            <strong>Shipping Date:</strong>
+                            <t t-if="o.state == 'done'">
+                                <p t-field="o.date_done"/>
+                            </t>
+                            <t t-if="o.state != 'done'">
+                                <p t-field="o.scheduled_date"/>
+                           </t>
+                        </div>
+                    </div>
+                    <table class="table table-sm" t-if="o.state!='done'" name="stock_move_table">
+                        <thead>
+                            <tr>
+                                <th name="th_sm_product"><strong>Descriptions</strong></th>
+                                <!-- <th name="th_sm_type"><strong>Type</strong></th> -->
+                                <th name="th_sm_quantity"><strong>Quantity</strong></th>
+                                <th name="th_sm_sales"><strong>Sales Unit</strong></th>
+                                <th name="th_sm_sales"><strong>Outsatnding</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="lines" t-value="o.move_lines.filtered(lambda x: x.product_uom_qty)"/>
+                            <tr t-foreach="lines" t-as="move">
+                                <td style="max-width:250px;word-break: break-all;">
+                                    <span t-field="move.product_id"/>
+                                    <p t-if="move.description_picking != move.product_id.name">
+                                        <span t-field="move.description_picking"/>
+                                    </p>
+                                </td>
+                                <!-- <td>
+                                  <span t-field="move.type_reference"/>
+                                </td> -->
+                                <td>
+                                    <span t-field="move.product_uom_qty"/>
+                                    <!--span t-field="move.product_uom"/-->
+                                </td>
+                                <td>
+                                  <span t-field="move.quantity_done"/>
+                                  <span t-field="move.product_uom"/>
+                                </td>
+                                <td>
+                                  <span t-field="move.reserved_availability"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-sm mt48" t-if="o.move_line_ids and o.state=='done'" name="stock_move_line_table">
+                        <t t-set="has_serial_number" t-value="o.move_line_ids.mapped('lot_id')"/>
+                        <thead>
+                            <tr>
+                                <th name="th_sml_product"><strong>Product</strong></th>
+                                <th name="lot_serial" t-if="has_serial_number" groups="stock.group_lot_on_delivery_slip">
+                                    Lot/Serial Number
+                                </th>
+                                <th name="th_sml_quantity" class="text-center"><strong>Quantity</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="o.move_line_ids" t-as="move_line">
+                                <td>
+                                    <span t-field="move_line.product_id"/>
+                                    <p t-if="move_line.move_id.description_picking != move_line.product_id.name">
+                                        <span t-field="move_line.move_id.description_picking"/>
+                                    </p>
+                                </td>
+                                <td t-if="has_serial_number and move_line.lot_id.name" groups="stock.group_lot_on_delivery_slip">
+                                    <span t-field="move_line.lot_id.name"/>
+                                </td>
+                                <td t-elif="has_serial_number" groups="stock.group_lot_on_delivery_slip">
+                                    <span t-field="move_line.lot_name"/>
+                                </td>
+                                <td class="text-center">
+                                    <span t-field="move_line.qty_done"/>
+                                    <span t-field="move_line.product_uom_id"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="border-top:2px solid black;margin-top:160px;">
+                        <strong style="font-size:0.8em;">Please Note:</strong><br/>
+                        <strong style="font-size:0.8em;">All shortages and damage must be notified to Future Designs within 2 days of delivery</strong><br/>
+                        <div class="row">
+                            <div class="col-6">
+                               <span>VEHICLE SUPPLIED BY</span>
+                               <span></span>
+                            </div>
+                            <div class="col-6">
+                               <span>VEHICLE REG No:</span>
+                               <span></span>
+                            </div>
+                            
+                        </div>
+                        <div class="row">
+                          <div class="col-6">
+                               <span>LOADED BY</span>
+                               <span></span>
+                            </div>
+                            <div class="col-6">
+                               <span>QTY OF PIECES:</span>
+                               <span></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-4">
+                            <span>CHECKED BY (FUTURE DESIGNS):</span>
+                          </div>
+                          <div class="col-8"></div>
+                        </div>
+                        <div class="row">
+                          <div class="col-6">
+                               <span>SIGNED</span>
+                               <span></span>
+                            </div>
+                            <div class="col-6">
+                               <span>PRINT</span>
+                               <span></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-8">
+                            <span>COMPANY</span>
+                          </div>
+                          <div class="col-4">
+                            <span>DATE</span>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-8">
+                            <span>CONTACT:</span>
+                          </div>
+                        </div>
+                        
+                    </div>
+                    
+                    <!--p>
+                        <t t-if="o.backorder_ids and o.backorder_ids.filtered(lambda x: x.state not in ('done', 'cancel'))">
+                            All items couldn't be shipped, the remaining ones will be shipped as soon as they become available.
+                        </t>
+                    </p-->
+                </div>
+            </t>
+         </t>
+</t>
